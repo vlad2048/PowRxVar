@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+
+    <Description>Composable reactive variables</Description>
+	<PackageReadmeFile>Readme.md</PackageReadmeFile>
+	<PackageTags>Reactive,Rx,C#,Variable</PackageTags>
+    <PackageProjectUrl>https://github.com/vlad2048/PowRxVar</PackageProjectUrl>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<None Include="..\..\Readme.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
+</Project>

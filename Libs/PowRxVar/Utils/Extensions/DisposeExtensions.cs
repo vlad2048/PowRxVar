@@ -1,36 +1,48 @@
-﻿using PowRxVar.Vars;
+﻿using System.Reactive.Linq;
 
-namespace PowRxVar.Utils.Extensions;
+// ReSharper disable once CheckNamespace
+namespace PowRxVar;
 
 public static class DisposeExtensions
 {
-	/*internal static ISubject<T> D<T>(this Subject<T> dispTarget, params IRoDispBase[] dispSources)
+	/// <summary>
+	/// Cause a target object to be disposed when any of the source objects is disposed
+	/// </summary>
+	/// <typeparam name="D">Target object type, need to implement IDisposable</typeparam>
+	/// <param name="dispDst">Target object</param>
+	/// <param name="dispSrcs">Source objects</param>
+	/// <returns>Target object</returns>
+	public static D D<D>(this D dispDst, params IRoDispBase[] dispSrcs)
+		where D : IDisposable
 	{
-		dispSources.CombineCancels().Register(dispTarget.OnCompleted);
-		return dispTarget;
-	}
-	internal static BehaviorSubject<T> D<T>(this BehaviorSubject<T> dispTarget, params IRoDispBase[] dispSources)
-	{
-		dispSources.CombineCancels().Register(dispTarget.OnCompleted);
-		return dispTarget;
-	}*/
-
-	public static T D<T>(this T dispTarget, params IRoDispBase[] dispSources)
-		where T : IDisposable
-	{
-		dispSources.CombineCancels().Register(dispTarget.Dispose);
-		return dispTarget;
-	}
-
-	public static T D<T>(this (T, IDisposable) dispTargetTuple, params IRoDispBase[] dispSources)
-	{
-		dispSources.CombineCancels().Register(dispTargetTuple.Item2.Dispose);
-		return dispTargetTuple.Item1;
+		dispSrcs
+			.Select(e => e.WhenDisposed)
+			.Merge()
+			.Subscribe(_ => dispDst.Dispose());
+		return dispDst;
 	}
 
-	private static CancellationToken CombineCancels(this IEnumerable<IRoDispBase> dispSources) =>
-		CancellationTokenSource.CreateLinkedTokenSource(
-			dispSources
-				.Select(e => e.CancelToken).ToArray()
-		).Token;
+	/// <summary>
+	/// Cause a target IDisposable to be disposed when any of the source objects is disposed
+	/// <para>
+	/// This is the safe version
+	/// </para>
+	/// </summary>
+	public static T D<T>(this (T, IDisposable) dispDstTuple, params IRoDispBase[] dispSrcs)
+	{
+		dispDstTuple.Item2.D(dispSrcs);
+		return dispDstTuple.Item1;
+	}
+
+	/// <summary>
+	/// Cause a target IDisposable to be disposed when any of the source objects is disposed
+	/// <para>
+	/// This is the safe version
+	/// </para>
+	/// </summary>
+	public static (T1, T2) D<T1, T2>(this (T1, T2, IDisposable) dispDstTuple, params IRoDispBase[] dispSrcs)
+	{
+		dispDstTuple.Item3.D(dispSrcs);
+		return (dispDstTuple.Item1, dispDstTuple.Item2);
+	}
 }

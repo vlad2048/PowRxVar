@@ -6,10 +6,20 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <DebugType>embedded</DebugType>
     
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
     
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Authors>vlad2048</Authors>
     
+    <Description>Composable reactive variables</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>Reactive,Rx,C#,Variable</PackageTags>
+    <PackageProjectUrl>https://github.com/vlad2048/PowRxVar</PackageProjectUrl>
+
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
 </Project>

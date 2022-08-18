@@ -1,4 +1,5 @@
-﻿namespace PowRxVar.Vars;
+﻿// ReSharper disable once CheckNamespace
+namespace PowRxVar;
 
 public interface IRwVar<T> : IRoVar<T>, IObserver<T>, IRwDispBase
 {

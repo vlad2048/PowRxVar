@@ -1,13 +1,13 @@
-﻿using PowRxVar.Vars;
+﻿using System.Reactive;
 
-namespace PowRxVar._Internal.Vars;
+namespace PowRxVar._Internal.Vars.NormalVars;
 
 class RoVar<T> : IRoVar<T>
 {
 	private readonly IRwVar<T> rwVar;
 
 	// IRoDispBase
-	public CancellationToken CancelToken => rwVar.CancelToken;
+	public IObservable<Unit> WhenDisposed => rwVar.WhenDisposed;
 	public bool IsDisposed => rwVar.IsDisposed;
 	// IRoVar<T>
 	public T V => rwVar.V;

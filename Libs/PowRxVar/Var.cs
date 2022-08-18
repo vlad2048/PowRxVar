@@ -1,7 +1,9 @@
-﻿using System.Reactive.Linq;
-using PowRxVar._Internal.Vars;
-using PowRxVar.Utils.Extensions;
-using PowRxVar.Vars;
+﻿using System.Linq.Expressions;
+using System.Reactive;
+using System.Reactive.Linq;
+using PowRxVar._Internal.Expressions;
+using PowRxVar._Internal.Vars.BndVars;
+using PowRxVar._Internal.Vars.NormalVars;
 
 namespace PowRxVar;
 
@@ -23,7 +25,7 @@ public static class Var
 	/// Create a read only variable with an initial value and an observable of updates
 	/// <br/>
 	/// <br/>
-	/// Note: Use the <see cref="DisposeExtensions.D{T}(T,PowRxVar.Vars.IRoDispBase[])"/> extension method to tie the returned IDisposable to the lifetime of other variables and return the simple read only variable
+	/// Note: Use the <see cref="DisposeExtensions.D{T}(T,IRoDispBase[])"/> extension method to tie the returned IDisposable to the lifetime of other variables and return the simple read only variable
 	/// </summary>
 	/// <typeparam name="T">Variable type</typeparam>
 	/// <param name="initVal">Initial Value</param>
@@ -33,6 +35,20 @@ public static class Var
 	{
 		var v = Make(initVal);
 		obs.Subscribe(v).D(v);
+		return (v.ToReadOnly(), v);
+	}
+
+	/// <summary>
+	/// Create a read only variable with an initial value and an observable of updates that can depend on the previous value
+	/// </summary>
+	/// <typeparam name="T">Variable type</typeparam>
+	/// <param name="initVal">Initial Value</param>
+	/// <param name="obsFun">Function that takes a reference to the variable being created (as readonly) and returns the observable of updates</param>
+	/// <returns>Tuple containing the created variable and an IDisposable to control the underlying variable lifetime</returns>
+	public static (IRoVar<T>, IDisposable) Make<T>(T initVal, Func<IRoVar<T>, IObservable<T>> obsFun)
+	{
+		var v = Make(initVal);
+		obsFun(v).Subscribe(v).D(v);
 		return (v.ToReadOnly(), v);
 	}
 
@@ -50,15 +66,47 @@ public static class Var
 
 
 	/// <summary>
-	/// Transform a writable bound variable into a read only variable
+	/// Transform a fully writable bound variable into a read only variable
 	/// <br/>
 	/// <br/>
-	/// Note: IRwBndVar inherits from IRoBndVar so you don't technically need to call this function. However calling it will prevent the user code from casting it back to an IRwVar. Similar to Observable.AsObservable() extension method
+	/// Note: IFullRwBndVar inherits from IRoBndVar so you don't technically need to call this function. However calling it will prevent the user code from casting it back to an IFullRwBndVar. Similar to Observable.AsObservable() extension method
 	/// </summary>
 	/// <typeparam name="T">Variable type</typeparam>
 	/// <param name="v">Writable bound variable</param>
 	/// <returns>Read only bound variable</returns>
-	public static IRoBndVar<T> ToReadOnly<T>(this IRwBndVar<T> v) => new RoBndVar<T>(v);
+	public static IRoBndVar<T> ToReadOnly<T>(this IFullRwBndVar<T> v) => new RoBndVar<T>(v);
+
+	/// <summary>
+	/// Transform a fully writable bound variable into a (outer only) writable bound variable
+	/// <br/>
+	/// <br/>
+	/// Note: IFullRwBndVar inherits from IRwBndVar so you don't technically need to call this function. However calling it will prevent the user code from casting it back to an IFullRwBndVar. Similar to Observable.AsObservable() extension method
+	/// </summary>
+	/// <typeparam name="T">Variable type</typeparam>
+	/// <param name="v">Fully writable bound variable</param>
+	/// <returns>(outer only) writable bound variable</returns>
+	public static IRwBndVar<T> ToRwBndVar<T>(this IFullRwBndVar<T> v) => new RwBndVar<T>(v);
+
+
+	/// <summary>
+	/// Transforms a variable. Equivalent to Observable.Select()
+	/// <br/>
+	/// <br/>
+	/// Note: The resulting variable will be automatically disposed when the input variable is disposed
+	/// </summary>
+	/// <typeparam name="T">Input variable type</typeparam>
+	/// <typeparam name="U">Output variable type</typeparam>
+	/// <param name="varT">Input variable</param>
+	/// <param name="fun">Function describing how to transform the variable</param>
+	/// <returns>Transformed variable</returns>
+	public static IRoVar<U> SelectVar<T, U>(
+		this IRoVar<T> varT,
+		Func<T, U> fun
+	) =>
+		Make(
+			fun(varT.V),
+			varT.Select(fun)
+		).D(varT);
 
 
 	/// <summary>
@@ -84,6 +132,16 @@ public static class Var
 			Obs.CombineLatest(varT, varU, fun)
 		).D(varT, varU);
 
+	/// <summary>
+	/// More general version of Combine using Expression Trees (slower but easier to use)
+	/// </summary>
+	/// <typeparam name="T">Result variable type</typeparam>
+	/// <param name="expr">Expression tree lambda that returns the resulting value in function of any number of input variables of any underlying types</param>
+	/// <param name="whenNeedUpdate"></param>
+	/// <returns>Combined variable</returns>
+	public static IRoVar<T> Expr<T>(Expression<Func<T>> expr, IObservable<Unit>? whenNeedUpdate = null) =>
+		VarExpr.Expr(expr, whenNeedUpdate);
+
 
 	/// <summary>
 	/// Switch to the last inner variable. Equivalent to Observable.Switch()
@@ -96,7 +154,10 @@ public static class Var
 	/// <param name="varT">Main variable</param>
 	/// <param name="selFun">Selector into main variable returning the inner variable</param>
 	/// <returns>Switched variable</returns>
-	public static IRoVar<U> SwitchVar<T, U>(this IRoVar<T> varT, Func<T, IRoVar<U>> selFun) =>
+	public static IRoVar<U> SwitchVar<T, U>(
+		this IRoVar<T> varT,
+		Func<T, IRoVar<U>> selFun
+	) =>
 		Make(
 			selFun(varT.V).V,
 			varT.Select(selFun).Switch()
@@ -106,5 +167,5 @@ public static class Var
 
 
 
-	public static IRwBndVar<T> MakeBnd<T>(T initVal) => new RwBndVar<T>(initVal);
+	public static IFullRwBndVar<T> MakeBnd<T>(T initVal) => new FullRwBndVar<T>(initVal);
 }

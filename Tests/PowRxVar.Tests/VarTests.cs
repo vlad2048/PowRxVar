@@ -1,5 +1,3 @@
-using PowRxVar.Vars;
-
 namespace PowRxVar.Tests;
 
 class VarTests
@@ -8,6 +6,7 @@ class VarTests
 	public void _00_RwVar_Change_and_Dispose()
 	{
 		var t = Var.Make(3);
+
 		var cnt = 0;
 		t.Subscribe(_ => cnt++);
 		cnt.ShouldBe(1);
@@ -114,7 +113,38 @@ class VarTests
 	}
 
 	[Test]
-	public void _03_Switch()
+	public void _03_Expr()
+	{
+		var a = Var.Make(3);
+		var b = Var.Make(5);
+		var c = Var.Make(7);
+		var r = Var.Expr(() => a.V * 3 + b.V * 2 + c.V);
+
+		var cnt = 0;
+		r.Subscribe(_ => cnt++);
+		void Check(int? expVal, int cntExp)
+		{
+			CheckVal(expVal, r);
+			cnt.ShouldBe(cntExp);
+		}
+
+		Check(3 * 3 + 5 * 2 + 7, 1);
+
+		a.V = 1;
+		Check(1 * 3 + 5 * 2 + 7, 2);
+
+		b.V = 6;
+		Check(1 * 3 + 6 * 2 + 7, 3);
+
+		c.V = 2;
+		Check(1 * 3 + 6 * 2 + 2, 4);
+
+		b.Dispose();
+		Check(null, 4);
+	}
+
+	[Test]
+	public void _04_Switch()
 	{
 		var i0 = Var.Make(3);
 		var vv = Var.Make(i0);
@@ -173,7 +203,7 @@ class VarTests
 	}
 
 	[Test]
-	public void _04_BndVar()
+	public void _05_BndVar()
 	{
 		var v = Var.MakeBnd(3);
 

@@ -1,8 +1,7 @@
 ﻿using System.Reactive.Subjects;
-using PowRxVar.Utils.Extensions;
-using PowRxVar.Vars;
+using PowRxVar._Internal.Vars.Disps;
 
-namespace PowRxVar._Internal.Vars;
+namespace PowRxVar._Internal.Vars.NormalVars;
 
 class RwVar<T> : RwDispBase, IRwVar<T>
 {

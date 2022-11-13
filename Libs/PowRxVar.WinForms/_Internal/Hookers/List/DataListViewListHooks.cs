@@ -34,6 +34,12 @@ class DataListViewListHooks<T> : IListHooks<T>
 		}
 	}
 
+	public int SelectedIndex
+	{
+		get => ctrl.SelectedIndex;
+		set => ctrl.SelectedIndex = value;
+	}
+
 	public DataListViewListHooks(DataListView ctrl)
 	{
 		this.ctrl = ctrl;

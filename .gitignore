@@ -4,3 +4,5 @@
 *.user
 [Bb]in/
 [Oo]bj/
+
+_infos-internal/

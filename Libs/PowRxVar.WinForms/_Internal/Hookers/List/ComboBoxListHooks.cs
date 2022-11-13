@@ -33,6 +33,12 @@ class ComboBoxListHooks<T> : IListHooks<T>
 		}
 	}
 
+	public int SelectedIndex
+	{
+		get => ctrl.SelectedIndex;
+		set => ctrl.SelectedIndex = value;
+	}
+
 	public ComboBoxListHooks(ComboBox ctrl)
 	{
 		this.ctrl = ctrl;

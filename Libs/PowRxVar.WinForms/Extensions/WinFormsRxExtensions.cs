@@ -1,5 +1,6 @@
 ﻿using System.Reactive.Linq;
 
+// ReSharper disable once CheckNamespace
 namespace PowRxVar;
 
 public static class WinFormsRxExtensions

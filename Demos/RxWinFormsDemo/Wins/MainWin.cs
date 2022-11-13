@@ -1,11 +1,10 @@
-using System.Diagnostics;
 using System.Reactive.Linq;
 using DynamicData;
 using PowMaybe;
 using PowRxVar;
 using PowRxVar.WinForms.Hookers;
 
-namespace RxWinFormsDemo;
+namespace RxWinFormsDemo.Wins;
 
 partial class MainWin : Form
 {

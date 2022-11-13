@@ -33,6 +33,13 @@ class ListBoxListHooks<T> : IListHooks<T>
 		}
 	}
 
+	public int SelectedIndex
+	{
+		get => ctrl.SelectedIndex;
+		set => ctrl.SelectedIndex = value;
+	}
+
+
 	public ListBoxListHooks(ListBox ctrl)
 	{
 		this.ctrl = ctrl;

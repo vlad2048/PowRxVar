@@ -3,7 +3,7 @@ using PowMaybe;
 using PowRxVar;
 using PowRxVar.WinForms.Hookers;
 
-namespace RxWinFormsDemo;
+namespace RxWinFormsDemo.Wins;
 
 partial class LinkedComboWin : Form
 {

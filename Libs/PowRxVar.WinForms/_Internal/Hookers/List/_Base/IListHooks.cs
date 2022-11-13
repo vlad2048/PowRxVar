@@ -10,4 +10,5 @@ interface IListHooks<T>
 	void SetDataSource(BindingList<T> bindingList, string? displayMember);
 	IObservable<Unit> WhenSelectedIndexChanged { get; }
 	Maybe<T> SelectedItem { get; set; }
+	int SelectedIndex { get; set; }
 }

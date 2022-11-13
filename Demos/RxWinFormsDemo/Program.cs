@@ -1,4 +1,5 @@
 using PowRxVar;
+using RxWinFormsDemo.Wins;
 
 namespace RxWinFormsDemo;
 
@@ -14,8 +15,9 @@ static class Program
 		// see https://aka.ms/applicationconfiguration.
 		ApplicationConfiguration.Initialize();
 
-		var win = new MainWin();
+		//var win = new MainWin();
 		//var win = new LinkedComboWin();
+		var win = new AutoSelectWin();
 
 		Application.Run(win);
 	}

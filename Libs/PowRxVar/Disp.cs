@@ -14,7 +14,7 @@ namespace PowRxVar;
 /// <summary>
 /// Represents a group of disposable resources that are disposed together.
 /// </summary>
-public sealed class Disp : ICollection<IDisposable>, ICancelable, IRoDispBase
+public sealed class Disp : ICollection<IDisposable>, ICancelable, IRwDispBase
 {
 	private const string Strings_Core_DISPOSABLES_CANT_CONTAIN_NULL = "Disposables collection can not contain null values.";
 

@@ -1,4 +1,4 @@
-﻿namespace RxWinFormsDemo;
+﻿namespace RxWinFormsDemo.Wins;
 
 partial class LinkedComboWin
 {

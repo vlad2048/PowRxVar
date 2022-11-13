@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Utils\Extensions\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Hookers\ListControls\" />
     <Folder Include="_Internal\Hookers\List\_Base\" />
   </ItemGroup>
   <ItemGroup>
@@ -13,8 +14,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="DynamicData" Version="7.9.7" />
+    <PackageReference Include="Jot" Version="2.1.13" />
     <PackageReference Include="ObjectListView.Updated" Version="2.9.3" />
-    <PackageReference Include="PowMaybe" Version="0.0.2" />
+    <PackageReference Include="PowBasics.WinForms" Version="0.0.3" />
+    <PackageReference Include="PowMaybe" Version="0.0.3" />
     <PackageReference Include="ReactiveUI.Events.Winforms" Version="15.1.1" />
   </ItemGroup>
   <ItemGroup>

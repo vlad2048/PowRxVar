@@ -15,9 +15,10 @@ class RwBndVar<T> : RwDispBase, IRwBndVar<T>
 		set => SetOuter(value);
 	}
 
-	public RwBndVar(IFullRwBndVar<T> fullRwBndVar)
+	public RwBndVar(IFullRwBndVar<T> fullRwBndVar, string? dbgExpr) : base(dbgExpr)
 	{
 		this.fullRwBndVar = fullRwBndVar;
+		this.D(fullRwBndVar);
 	}
 
 	public override string ToString() => $"RwBndVar({V})";

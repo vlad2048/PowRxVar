@@ -29,7 +29,7 @@ class FullRwBndVar<T> : RwDispBase, IFullRwBndVar<T>
 		set => SetOuter(value);
 	}
 
-	public FullRwBndVar(T initVal)
+	public FullRwBndVar(T initVal, string? dbgExpr) : base(dbgExpr)
 	{
 		whenInner = new Subject<T>().D(this);
 		whenOuter = new Subject<T>().D(this);

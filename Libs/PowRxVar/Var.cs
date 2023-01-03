@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Runtime.CompilerServices;
 using PowRxVar._Internal.Expressions;
 using PowRxVar._Internal.Vars.BndVars;
 using PowRxVar._Internal.Vars.NormalVars;
@@ -17,8 +18,21 @@ public static class Var
 	/// </summary>
 	/// <typeparam name="T">Variable type</typeparam>
 	/// <param name="initVal">Initial Value</param>
+	/// <param name="initValExpr">dbg</param>
 	/// <returns>Created variable</returns>
-	public static IRwVar<T> Make<T>(T initVal) => new RwVar<T>(initVal);
+	public static IRwVar<T> Make<T>(
+		T initVal,
+		[CallerArgumentExpression(nameof(initVal))] string? initValExpr = null
+	)
+		=> new RwVar<T>(initVal, $"Var.Make({initValExpr})");
+	
+
+
+	public static IFullRwBndVar<T> MakeBnd<T>(
+		T initVal,
+		[CallerArgumentExpression(nameof(initVal))] string? initValExpr = null
+	)
+		=> new FullRwBndVar<T>(initVal, $"Var.MakeBnd({initValExpr})");
 
 
 	/// <summary>
@@ -30,10 +44,23 @@ public static class Var
 	/// <typeparam name="T">Variable type</typeparam>
 	/// <param name="initVal">Initial Value</param>
 	/// <param name="obs">Observable of updates</param>
+	/// <param name="initValExpr">dbg</param>
+	/// <param name="obsExpr">dbg</param>
 	/// <returns>Tuple containing the created variable and an IDisposable to control the underlying variable lifetime</returns>
-	public static (IRoVar<T>, IDisposable) Make<T>(T initVal, IObservable<T> obs)
+	public static (IRoVar<T>, IDisposable) Make<T>(
+		T initVal,
+		IObservable<T> obs,
+		[CallerArgumentExpression(nameof(initVal))] string? initValExpr = null,
+		[CallerArgumentExpression(nameof(obs))] string? obsExpr = null
+	)
 	{
-		var v = Make(initVal);
+		var dbgStr = $"""
+			Var.Make(
+				{initValExpr},
+				{obsExpr}
+			)
+			""";
+		var v = Make(initVal, dbgStr);
 		obs.Subscribe(v).D(v);
 		return (v.ToReadOnly(), v);
 	}
@@ -44,10 +71,23 @@ public static class Var
 	/// <typeparam name="T">Variable type</typeparam>
 	/// <param name="initVal">Initial Value</param>
 	/// <param name="obsFun">Function that takes a reference to the variable being created (as readonly) and returns the observable of updates</param>
+	/// <param name="initValExpr">dbg</param>
+	/// <param name="obsFunExpr">dbg</param>
 	/// <returns>Tuple containing the created variable and an IDisposable to control the underlying variable lifetime</returns>
-	public static (IRoVar<T>, IDisposable) Make<T>(T initVal, Func<IRoVar<T>, IObservable<T>> obsFun)
+	public static (IRoVar<T>, IDisposable) Make<T>(
+		T initVal,
+		Func<IRoVar<T>, IObservable<T>> obsFun,
+		[CallerArgumentExpression(nameof(initVal))] string? initValExpr = null,
+		[CallerArgumentExpression(nameof(obsFun))] string? obsFunExpr = null
+	)
 	{
-		var v = Make(initVal);
+		var dbgStr = $"""
+			Var.Make(
+				{initValExpr},
+				{obsFunExpr}
+			)
+			""";
+		var v = Make(initVal, dbgStr);
 		obsFun(v).Subscribe(v).D(v);
 		return (v.ToReadOnly(), v);
 	}
@@ -84,8 +124,13 @@ public static class Var
 	/// </summary>
 	/// <typeparam name="T">Variable type</typeparam>
 	/// <param name="v">Fully writable bound variable</param>
+	/// <param name="vExpr">dbg</param>
 	/// <returns>(outer only) writable bound variable</returns>
-	public static IRwBndVar<T> ToRwBndVar<T>(this IFullRwBndVar<T> v) => new RwBndVar<T>(v);
+	public static IRwBndVar<T> ToRwBndVar<T>(
+		this IFullRwBndVar<T> v,
+		[CallerArgumentExpression(nameof(v))] string? vExpr = null
+	)
+		=> new RwBndVar<T>(v, $"ToRwBndVar({vExpr})");
 
 
 	/// <summary>
@@ -162,10 +207,4 @@ public static class Var
 			selFun(varT.V).V,
 			varT.Select(selFun).Switch()
 		).D(varT);
-
-
-
-
-
-	public static IFullRwBndVar<T> MakeBnd<T>(T initVal) => new FullRwBndVar<T>(initVal);
 }

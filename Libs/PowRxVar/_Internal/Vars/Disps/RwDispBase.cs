@@ -4,7 +4,7 @@ namespace PowRxVar._Internal.Vars.Disps;
 
 class RwDispBase : IRwDispBase
 {
-	public Disp D { get; } = new();
+	public Disp D { get; }
 	public IObservable<Unit> WhenDisposed => D.WhenDisposed;
 	public bool IsDisposed { get; private set; }
 
@@ -25,4 +25,6 @@ class RwDispBase : IRwDispBase
 	private void OnDisposing(bool isDisposing) => D.Dispose();
 
 	~RwDispBase() => Dispose(false);
+
+	public RwDispBase(string? dbgExpr) => D = new Disp(dbgExpr);
 }

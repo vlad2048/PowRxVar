@@ -9,43 +9,10 @@ class RwVar<T> : RwDispBase, IRwVar<T>
 
 	public T V { get => subj.Value; set => OnNext(value); }
 
-	public RwVar(T initVal)
+	public RwVar(T initVal, string? dbgExpr) : base(dbgExpr)
 	{
 		subj = new BehaviorSubject<T>(initVal).D(this);
 	}
-
-	/*
-
-	// ****************
-	// * Safe Version *
-	// ****************
-
-	private T cachedVal;
-
-	public T V
-	{
-		get => IsDisposed switch
-		{
-			false => subj.Value,
-			true => cachedVal
-		};
-		set
-		{
-			if (IsDisposed) return;
-			cachedVal = value;
-			OnNext(value);
-		}
-	}
-
-	public RwVar(T initVal)
-	{
-		cachedVal = initVal;
-		subj = new BehaviorSubject<T>(initVal).D(this);
-	}
-
-	*/
-
-	public override string ToString() => $"RwVar({V})";
 
 	public IDisposable Subscribe(IObserver<T> observer) => subj.Subscribe(observer);
 

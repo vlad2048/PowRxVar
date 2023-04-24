@@ -1,4 +1,7 @@
-﻿namespace PowRxVar;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
+
+namespace PowRxVar;
 
 public static class DispStats
 {
@@ -12,11 +15,11 @@ public static class DispStats
 		};
 	}
 
-	private static readonly Dictionary<int, VarNfo> map = new();
+	private static readonly ConcurrentDictionary<int, VarNfo> map = new();
 	private static int? bpId;
 	private static int dispIdIdx;
 
-	internal static int GetNextDispId() => dispIdIdx++;
+	internal static int GetNextDispId() => Interlocked.Increment(ref dispIdIdx);
 	internal static void ClearForTests()
 	{
 		dispIdIdx = 0;
@@ -44,18 +47,34 @@ public static class DispStats
 		return arr.Length == 0;
 	}
 
-	private static void L(string s) => Console.WriteLine(s);
-
 	internal static void DispCreated(int id, string? dbgExpr)
 	{
-		if (bpId == id) OnBPHit?.Invoke();
-		if (map.ContainsKey(id)) throw new ArgumentException("Invalid Disp.id");
-		map[id] = new VarNfo(id, dbgExpr);
+		try
+		{
+			if (bpId == id) OnBPHit?.Invoke();
+			if (map.ContainsKey(id)) throw new ArgumentException("Invalid Disp.id");
+			map[id] = new VarNfo(id, dbgExpr);
+		}
+		catch (Exception ex)
+		{
+			Debugger.Launch();
+			Debugger.Break();
+		}
 	}
 
 	internal static void DispDisposed(int id)
 	{
-		if (!map.ContainsKey(id)) throw new ArgumentException("Invalid Disp.id");
-		map.Remove(id);
+		try
+		{
+			if (!map.ContainsKey(id)) throw new ArgumentException("Invalid Disp.id");
+			map.TryRemove(id, out _);
+		}
+		catch (Exception ex)
+		{
+			Debugger.Launch();
+			Debugger.Break();
+		}
 	}
+
+	private static void L(string s) => Console.WriteLine(s);
 }

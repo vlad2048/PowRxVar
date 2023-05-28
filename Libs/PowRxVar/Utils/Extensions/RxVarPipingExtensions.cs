@@ -7,5 +7,5 @@ public static class RxVarPipingExtensions
 		vSrc.Subscribe(e => vDst.V = e).D(vSrc, vDst);
 
 	public static void PipeToInner<T>(this IRoVar<T> vSrc, IFullRwBndVar<T> vDst) =>
-		vSrc.Subscribe(e => vDst.SetInner(e)).D(vSrc, vDst);
+		vSrc.Subscribe(vDst.SetInner).D(vSrc, vDst);
 }

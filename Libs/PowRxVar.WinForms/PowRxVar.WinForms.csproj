@@ -19,7 +19,7 @@
 		<PackageReference Include="DynamicData" Version="7.9.7" />
 		<PackageReference Include="Jot" Version="2.1.13" />
 		<PackageReference Include="ObjectListView.Updated" Version="2.9.3" />
-		<PackageReference Include="PowBasics.WinForms" Version="0.0.9" />
+		<PackageReference Include="PowBasics.WinForms" Version="0.0.10" />
 		<PackageReference Include="PowMaybe" Version="0.0.9" />
 		<PackageReference Include="ReactiveUI.Events.Winforms" Version="15.1.1" />
 	</ItemGroup>

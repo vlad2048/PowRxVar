@@ -15,6 +15,12 @@ class RwBndVar<T> : RwDispBase, IRwBndVar<T>
 		set => SetOuter(value);
 	}
 
+	public bool DisableEqualityChecks
+	{
+		get => fullRwBndVar.DisableEqualityChecks;
+		set => fullRwBndVar.DisableEqualityChecks = value;
+	}
+
 	public RwBndVar(IFullRwBndVar<T> fullRwBndVar, string? dbgExpr) : base(dbgExpr)
 	{
 		this.fullRwBndVar = fullRwBndVar;

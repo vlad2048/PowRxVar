@@ -14,12 +14,12 @@ class FullRwBndVar<T> : RwDispBase, IFullRwBndVar<T>
 	public IObservable<T> WhenOuter => whenOuter.AsObservable();
 	public void SetInner(T v)
 	{
-		if (Equals(v, V)) return;
+		if (!DisableEqualityChecks && Equals(v, V)) return;
 		whenInner.OnNext(v);
 	}
 	public void SetOuter(T v)
 	{
-		if (Equals(v, V)) return;
+		if (!DisableEqualityChecks && Equals(v, V)) return;
 		whenOuter.OnNext(v);
 	}
 
@@ -28,6 +28,8 @@ class FullRwBndVar<T> : RwDispBase, IFullRwBndVar<T>
 		get => mixedVar.V;
 		set => SetOuter(value);
 	}
+
+	public bool DisableEqualityChecks { get; set; }
 
 	public FullRwBndVar(T initVal, string? dbgExpr) : base(dbgExpr)
 	{

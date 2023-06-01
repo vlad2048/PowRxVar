@@ -9,6 +9,8 @@ class RwVar<T> : RwDispBase, IRwVar<T>
 
 	public T V { get => subj.Value; set => OnNext(value); }
 
+	public bool DisableEqualityChecks { get; set; }
+
 	public RwVar(T initVal, string? dbgExpr) : base(dbgExpr)
 	{
 		subj = new BehaviorSubject<T>(initVal).D(this);
@@ -18,7 +20,7 @@ class RwVar<T> : RwDispBase, IRwVar<T>
 
 	public void OnNext(T value)
 	{
-		if (Equals(value, V)) return;
+		if (!DisableEqualityChecks && Equals(value, V)) return;
 		subj.OnNext(value);
 	}
 	public void OnCompleted() => subj.OnCompleted();

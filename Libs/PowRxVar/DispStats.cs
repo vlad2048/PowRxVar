@@ -55,7 +55,7 @@ public static class DispStats
 			if (map.ContainsKey(id)) throw new ArgumentException("Invalid Disp.id");
 			map[id] = new VarNfo(id, dbgExpr);
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
 			Debugger.Launch();
 			Debugger.Break();
@@ -69,7 +69,7 @@ public static class DispStats
 			if (!map.ContainsKey(id)) throw new ArgumentException("Invalid Disp.id");
 			map.TryRemove(id, out _);
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
 			Debugger.Launch();
 			Debugger.Break();

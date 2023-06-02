@@ -47,6 +47,13 @@ public static class DisposeExtensions
 		return (dispDstTuple.Item1, dispDstTuple.Item2);
 	}
 
+	public static (T1, T2, T3) D<T1, T2, T3>(this (T1, T2, T3, IDisposable) dispDstTuple, params IRoDispBase[] dispSrcs)
+	{
+		dispDstTuple.Item4.D(dispSrcs);
+		return (dispDstTuple.Item1, dispDstTuple.Item2, dispDstTuple.Item3);
+	}
+
+
 	public static Dictionary<K, V> D<K, V>(this Dictionary<K, V> dict, IRoDispBase d)
 		where K : notnull
 		where V : IDisposable

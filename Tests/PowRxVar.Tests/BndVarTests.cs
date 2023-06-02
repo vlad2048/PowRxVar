@@ -7,7 +7,7 @@ class BndVarTests
 	private Disp d = null!;
 
 	[Test]
-	public void _01_DispOrder()
+	public void _00_DispOrder()
 	{
 		var list = new List<int>();
 		using (var dd = new Disp())
@@ -31,23 +31,67 @@ class BndVarTests
 	{
 		var rxVar = Var.MakeBnd(123).D(d);
 		var rxBndVar = rxVar.ToRwBndVar();
+	}
 
-		/*
-		Issue before I linked the lifetimes of both
+	[Test]
+	public void _04_InnerOuter()
+	{
+		var rxVarFull = Var.MakeBnd(3).D(d);
+		var rxVar = rxVarFull.ToRwBndVar();
 
-		[1, '123'], [2, 'WhenInner.Merge(WhenOuter)'], [3, 'rxVar']
-		var rxVar = Var.MakeBnd(123);
-		var rxBndVar = rxVar.ToRwBndVar();
+		var cntFull = 0;
+		var cntFullInner = 0;
+		var cntFullOuter = 0;
+		rxVarFull.Subscribe(_ => cntFull++);
+		rxVarFull.WhenInner.Subscribe(_ => cntFullInner++);
+		rxVarFull.WhenOuter.Subscribe(_ => cntFullOuter++);
+		void CheckFull(int expVal, int expCnt, int expCntInner, int expCntOuter)
+		{
+			rxVarFull.V.ShouldBe(expVal);
+			cntFull.ShouldBe(expCnt);
+			cntFullInner.ShouldBe(expCntInner);
+			cntFullOuter.ShouldBe(expCntOuter);
+			//Console.WriteLine($"val:{rxVar.V}  cnt:{cnt}  cntInner:{cntInner}  cntOuter:{cntOuter}");
+		}
 
-		[3, 'rxVar']
-		var rxVar = Var.MakeBnd(123).D(d);			<---
-		var rxBndVar = rxVar.ToRwBndVar();
+		var cnt = 0;
+		var cntInner = 0;
+		var cntOuter = 0;
+		rxVar.Subscribe(_ => cnt++);
+		rxVar.WhenInner.Subscribe(_ => cntInner++);
+		rxVar.WhenOuter.Subscribe(_ => cntOuter++);
+		void CheckSimp(int expVal, int expCnt, int expCntInner, int expCntOuter)
+		{
+			rxVar.V.ShouldBe(expVal);
+			cnt.ShouldBe(expCnt);
+			cntInner.ShouldBe(expCntInner);
+			cntOuter.ShouldBe(expCntOuter);
+			//Console.WriteLine($"val:{rxVar.V}  cnt:{cnt}  cntInner:{cntInner}  cntOuter:{cntOuter}");
+		}
 
-		[1, '123'], [2, 'WhenInner.Merge(WhenOuter)']
-		var rxVar = Var.MakeBnd(123);
-		var rxBndVar = rxVar.ToRwBndVar().D(d);		<---
+		CheckFull(3, 1, 0, 0);
+		CheckSimp(3, 1, 0, 0);
 
-		*/
+		rxVarFull.SetInner(4);
+		CheckFull(4, 2, 1, 0);
+		CheckSimp(4, 2, 1, 0);
+
+		rxVarFull.SetOuter(5);
+		CheckFull(5, 3, 1, 1);
+		CheckSimp(5, 3, 1, 1);
+
+		rxVarFull.V = 6;
+		CheckFull(6, 4, 1, 2);
+		CheckSimp(6, 4, 1, 2);
+
+
+		rxVar.SetOuter(7);
+		CheckFull(7, 5, 1, 3);
+		CheckSimp(7, 5, 1, 3);
+
+		rxVar.V = 8;
+		CheckFull(8, 6, 1, 4);
+		CheckSimp(8, 6, 1, 4);
 	}
 
 

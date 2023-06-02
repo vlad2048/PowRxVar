@@ -1,4 +1,5 @@
-﻿using System.Reactive.Linq;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Linq;
 
 // ReSharper disable once CheckNamespace
 namespace PowRxVar;
@@ -44,5 +45,18 @@ public static class DisposeExtensions
 	{
 		dispDstTuple.Item3.D(dispSrcs);
 		return (dispDstTuple.Item1, dispDstTuple.Item2);
+	}
+
+	public static Dictionary<K, V> D<K, V>(this Dictionary<K, V> dict, IRoDispBase d)
+		where K : notnull
+		where V : IDisposable
+	{
+		Disposable.Create(() =>
+		{
+			foreach (var val in dict.Values)
+				val.Dispose();
+			dict.Clear();
+		}).D(d);
+		return dict;
 	}
 }

@@ -9,11 +9,12 @@ class RwVar<T> : RwDispBase, IRwVar<T>
 
 	public T V { get => subj.Value; set => OnNext(value); }
 
-	public bool DisableEqualityChecks { get; set; }
+	public bool DisableEqualityChecks { get; }
 
-	public RwVar(T initVal, string? dbgExpr) : base(dbgExpr)
+	public RwVar(T initVal, bool noCheck, string? dbgExpr) : base(dbgExpr)
 	{
 		subj = new BehaviorSubject<T>(initVal).D(this);
+		DisableEqualityChecks = noCheck;
 	}
 
 	public IDisposable Subscribe(IObserver<T> observer) => subj.Subscribe(observer);

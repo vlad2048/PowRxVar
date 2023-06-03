@@ -29,16 +29,26 @@ class FullRwBndVar<T> : RwDispBase, IFullRwBndVar<T>
 		set => SetOuter(value);
 	}
 
-	public bool DisableEqualityChecks { get; set; }
+	public bool DisableEqualityChecks { get; }
 
-	public FullRwBndVar(T initVal, string? dbgExpr) : base(dbgExpr)
+	public FullRwBndVar(T initVal, bool noCheck, string? dbgExpr) : base(dbgExpr)
 	{
+		DisableEqualityChecks = noCheck;
 		whenInner = new Subject<T>().D(this);
 		whenOuter = new Subject<T>().D(this);
-		mixedVar = Var.Make(
-			initVal,
-			WhenInner.Merge(WhenOuter)
-		).D(this);
+		mixedVar = noCheck switch
+		{
+			false =>
+				Var.Make(
+					initVal,
+					WhenInner.Merge(WhenOuter)
+				).D(this),
+			true =>
+				Var.MakeNoCheck(
+					initVal,
+					WhenInner.Merge(WhenOuter)
+				).D(this),
+		};
 	}
 
 	public override string ToString() => $"FullRwBndVar({V})";

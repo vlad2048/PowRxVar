@@ -24,15 +24,26 @@ public static class Var
 		T initVal,
 		[CallerArgumentExpression(nameof(initVal))] string? initValExpr = null
 	)
-		=> new RwVar<T>(initVal, $"Var.Make({initValExpr})");
-	
+		=> new RwVar<T>(initVal, false, $"Var.Make({initValExpr})");
+
+	public static IRwVar<T> MakeNoCheck<T>(
+		T initVal,
+		[CallerArgumentExpression(nameof(initVal))] string? initValExpr = null
+	)
+		=> new RwVar<T>(initVal, true, $"Var.Make({initValExpr})");
 
 
 	public static IFullRwBndVar<T> MakeBnd<T>(
 		T initVal,
 		[CallerArgumentExpression(nameof(initVal))] string? initValExpr = null
 	)
-		=> new FullRwBndVar<T>(initVal, $"Var.MakeBnd({initValExpr})");
+		=> new FullRwBndVar<T>(initVal, false, $"Var.MakeBnd({initValExpr})");
+
+	public static IFullRwBndVar<T> MakeBndNoCheck<T>(
+		T initVal,
+		[CallerArgumentExpression(nameof(initVal))] string? initValExpr = null
+	)
+		=> new FullRwBndVar<T>(initVal, true, $"Var.MakeBnd({initValExpr})");
 
 
 	/// <summary>
@@ -64,6 +75,26 @@ public static class Var
 		obs.Subscribe(v).D(v);
 		return (v.ToReadOnly(), v);
 	}
+
+	internal static (IRoVar<T>, IDisposable) MakeNoCheck<T>(
+		T initVal,
+		IObservable<T> obs,
+		[CallerArgumentExpression(nameof(initVal))] string? initValExpr = null,
+		[CallerArgumentExpression(nameof(obs))] string? obsExpr = null
+	)
+	{
+		var dbgStr = $"""
+			Var.Make(
+				{initValExpr},
+				{obsExpr}
+			)
+			""";
+		var v = MakeNoCheck(initVal, dbgStr);
+		obs.Subscribe(v).D(v);
+		return (v.ToReadOnly(), v);
+	}
+
+
 
 	/// <summary>
 	/// Create a read only variable with an initial value and an observable of updates that can depend on the previous value

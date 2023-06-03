@@ -10,10 +10,10 @@ namespace PowRxVar;
 /// </summary>
 public static class RxVarMaybeExt
 {
-	public static IObservable<T> WhenSome<T>(this IRoVar<Maybe<T>> mayVar) =>
+	public static IObservable<T> WhenSome<T>(this IObservable<Maybe<T>> mayVar) =>
 		mayVar.Where(e => e.IsSome()).Select(e => e.Ensure());
 
-	public static IObservable<Unit> WhenNone<T>(this IRoVar<Maybe<T>> mayVar) =>
+	public static IObservable<Unit> WhenNone<T>(this IObservable<Maybe<T>> mayVar) =>
 		mayVar.Where(e => e.IsNone()).ToUnit();
 
 	public static IRoVar<bool> WhenVarSome<T>(this IRoVar<Maybe<T>> v) =>

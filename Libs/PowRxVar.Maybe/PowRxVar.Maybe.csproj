@@ -2,11 +2,10 @@
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
-		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PowMaybe" Version="0.0.9" />
+		<PackageReference Include="PowMaybe" Version="0.0.10" />
 	</ItemGroup>
 
 	<ItemGroup>

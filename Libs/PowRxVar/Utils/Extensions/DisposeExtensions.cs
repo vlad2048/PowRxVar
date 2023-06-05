@@ -7,6 +7,15 @@ namespace PowRxVar;
 public static class DisposeExtensions
 {
 	/// <summary>
+	/// Dispose of an object on program exit (AppDomain.CurrentDomain.ProcessExit)
+	/// </summary>
+	public static T DisposeOnProgramExit<T>(this T obj) where T : IDisposable
+	{
+		obj.D(exitD.Value);
+		return obj;
+	}
+
+	/// <summary>
 	/// Cause a target object to be disposed when any of the source objects is disposed
 	/// </summary>
 	/// <typeparam name="D">Target object type, need to implement IDisposable</typeparam>
@@ -65,5 +74,26 @@ public static class DisposeExtensions
 			dict.Clear();
 		}).D(d);
 		return dict;
+	}
+
+
+
+
+
+
+	private static readonly Lazy<Disp> exitD = new(() => new Disp());
+
+	internal static void DisposeExitD()
+	{
+		if (exitD.IsValueCreated)
+			exitD.Value.Dispose();
+	}
+
+	static DisposeExtensions()
+	{
+		AppDomain.CurrentDomain.ProcessExit += (_, _) =>
+		{
+			DisposeExitD();
+		};
 	}
 }

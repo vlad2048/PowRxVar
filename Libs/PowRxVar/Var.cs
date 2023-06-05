@@ -11,6 +11,20 @@ namespace PowRxVar;
 public static class Var
 {
 	/// <summary>
+	/// Call this at the end of your program to check if you forgot to call Dispose() on some Disps
+	/// </summary>
+	/// <param name="pauseOnIssue">if true, then in case of an issue, wait for a key press before exiting</param>
+	public static void CheckForUnDisposedDisps(bool pauseOnIssue = false)
+	{
+		DisposeExtensions.DisposeExitD();
+		var isIssue = DispStats.Log();
+		if (pauseOnIssue && isIssue)
+			Console.ReadKey();
+	}
+
+
+
+	/// <summary>
 	/// Create a writable variable with an initial value
 	/// <br/>
 	/// <br/>

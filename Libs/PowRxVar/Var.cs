@@ -17,8 +17,8 @@ public static class Var
 	public static void CheckForUnDisposedDisps(bool pauseOnIssue = false)
 	{
 		DisposeExtensions.DisposeExitD();
-		var isIssue = DispStats.Log();
-		if (pauseOnIssue && isIssue)
+		var isOk = DispStats.Log();
+		if (pauseOnIssue && !isOk)
 			Console.ReadKey();
 	}
 

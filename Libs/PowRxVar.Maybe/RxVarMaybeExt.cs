@@ -23,6 +23,16 @@ public static class RxVarMaybeExt
 		v.SelectVar(e => e.IsNone());
 
 
+	public static IObservable<U> SelectMaySwitch<T, U>(this IObservable<Maybe<T>> obs, Func<T, IObservable<U>> fun) =>
+		obs
+			.Select(may => may.IsSome(out var val) switch
+			{
+				true => fun(val),
+				false => Observable.Never<U>()
+			})
+			.Switch();
+
+
 	public static IObservable<Maybe<U>> SelectMay<T, U>(this IObservable<Maybe<T>> obs, Func<T, U> fun) =>
 		obs.Select(e => e.Select(fun));
 

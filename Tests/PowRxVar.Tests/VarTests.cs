@@ -118,6 +118,7 @@ class VarTests
 		var a = Var.Make(3);
 		var b = Var.Make(5);
 		var c = Var.Make(7);
+		// ReSharper disable once AccessToDisposedClosure
 		var r = Var.Expr(() => a.V * 3 + b.V * 2 + c.V);
 
 		var cnt = 0;
@@ -246,6 +247,23 @@ class VarTests
 		Should.Throw<ObjectDisposedException>(() => v.SetInner(123));
 		Should.Throw<ObjectDisposedException>(() => v.SetOuter(456));
 		Should.Throw<ObjectDisposedException>(() => v.V);
+	}
+
+	[Test]
+	public void _06_MakeConst()
+	{
+		var t = Var.MakeConst(3);
+
+		var cnt = 0;
+		var obsVal = 0;
+		t.Subscribe(val =>
+		{
+			obsVal = val;
+			cnt++;
+		});
+		obsVal.ShouldBe(3);
+		cnt.ShouldBe(1);
+		t.V.ShouldBe(3);
 	}
 
 

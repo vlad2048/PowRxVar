@@ -23,6 +23,8 @@ public static class Var
 	}
 
 
+	public static IRoVar<T> MakeConst<T>(T val) => new RoVarConst<T>(val);
+
 
 	/// <summary>
 	/// Create a writable variable with an initial value

@@ -1,4 +1,5 @@
 ﻿using System.Reactive;
+using System.Reactive.Disposables;
 
 namespace PowRxVar._Internal.Vars.NormalVars;
 
@@ -20,4 +21,26 @@ class RoVar<T> : IRoVar<T>
 	public override string ToString() => $"RoVar({V})";
 
 	public IDisposable Subscribe(IObserver<T> observer) => rwVar.Subscribe(observer);
+}
+
+
+class RoVarConst<T> : IRoVar<T>
+{
+	// IRoDispBase
+	public IObservable<Unit> WhenDisposed => Obs.Never<Unit>();
+	public bool IsDisposed => false;
+
+	// IRoVar<T>
+	public T V { get; }
+
+	public RoVarConst(T v)
+	{
+		V = v;
+	}
+
+	public IDisposable Subscribe(IObserver<T> observer)
+	{
+		observer.OnNext(V);
+		return Disposable.Empty;
+	}
 }

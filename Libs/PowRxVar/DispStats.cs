@@ -3,8 +3,32 @@ using System.Diagnostics;
 
 namespace PowRxVar;
 
-public static class DispStats
+static class DispStats
 {
+	public static void SetBP(int id) => bpId = id;
+
+	public static Action? OnBPHit { get; set; }
+
+	public static bool Log()
+	{
+		L("");
+		var arr = map.Values.OrderBy(e => e.Id).ToArray();
+		var title = arr.Length switch
+		{
+			0 => "All Disps released",
+			_ => $"{arr.Length} unreleased Disp{(arr.Length == 1 ? "" : "s")}"
+		};
+		L(title);
+		L(new string('=', title.Length));
+		if (arr.Length > 0)
+			L(string.Join(", ", arr.Select(e => $"{e}")));
+		L("");
+		return arr.Length == 0;
+	}
+
+
+
+
 	private record VarNfo(int Id, string? Expr)
 	{
 		public override string ToString() => $"[{Id}, {ExprStr}]";
@@ -26,26 +50,6 @@ public static class DispStats
 		map.Clear();
 	}
 
-
-	public static void SetBP(int id) => bpId = id;
-	public static Action? OnBPHit { get; set; }
-
-	public static bool Log()
-	{
-		L("");
-		var arr = map.Values.OrderBy(e => e.Id).ToArray();
-		var title = arr.Length switch
-		{
-			0 => "All Disps released",
-			_ => $"{arr.Length} unreleased Disp{(arr.Length == 1 ? "" : "s")}"
-		};
-		L(title);
-		L(new string('=', title.Length));
-		if (arr.Length > 0)
-			L(string.Join(", ", arr.Select(e => $"{e}")));
-		L("");
-		return arr.Length == 0;
-	}
 
 	internal static void DispCreated(int id, string? dbgExpr)
 	{

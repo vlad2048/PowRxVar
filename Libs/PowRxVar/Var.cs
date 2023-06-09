@@ -10,19 +10,6 @@ namespace PowRxVar;
 
 public static class Var
 {
-	/// <summary>
-	/// Call this at the end of your program to check if you forgot to call Dispose() on some Disps
-	/// </summary>
-	/// <param name="pauseOnIssue">if true, then in case of an issue, wait for a key press before exiting</param>
-	public static void CheckForUnDisposedDisps(bool pauseOnIssue = false)
-	{
-		DisposeExtensions.DisposeExitD();
-		var isOk = DispStats.Log();
-		if (pauseOnIssue && !isOk)
-			Console.ReadKey();
-	}
-
-
 	public static IRoVar<T> MakeConst<T>(T val) => new RoVarConst<T>(val);
 
 

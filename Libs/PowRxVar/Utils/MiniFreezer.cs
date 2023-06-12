@@ -8,7 +8,7 @@ namespace PowRxVar.Utils;
 /// Keeps track of a boolean flag IsFrozen set to true on creation
 /// and switched to false a short while after.
 /// </summary>
-public class MiniFreezer : IDisposable
+public sealed class MiniFreezer : IDisposable
 {
 	private static readonly TimeSpan DefaultPeriod = TimeSpan.FromMilliseconds(100);
 

@@ -4,7 +4,7 @@ using PowRxVar._Internal.Expressions.Utils;
 
 namespace PowRxVar._Internal.Expressions.Visitors;
 
-class VarPickerExprVisitor : ExpressionVisitor
+sealed class VarPickerExprVisitor : ExpressionVisitor
 {
 	private readonly HashSet<object> addedVars = new();
 	private readonly List<VarNfo> vars = new();

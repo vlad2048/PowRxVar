@@ -8,12 +8,14 @@ public static class VarDbg
 	/// Call this at the end of your program to check if you forgot to call Dispose() on some Disps
 	/// </summary>
 	/// <param name="pauseOnIssue">if true, then in case of an issue, wait for a key press before exiting</param>
-	public static void CheckForUndisposedDisps(bool pauseOnIssue = false)
+	/// <returns>true if there were undisposed Disps</returns>
+	public static bool CheckForUndisposedDisps(bool pauseOnIssue = false)
 	{
 		DisposeExtensions.DisposeExitD();
 		var isOk = DispStats.Log();
 		if (pauseOnIssue && !isOk)
 			Console.ReadKey();
+		return !isOk;
 	}
 
 	/// <summary>

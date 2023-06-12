@@ -4,7 +4,7 @@ using PowRxVar._Internal.Expressions.Utils;
 
 namespace PowRxVar._Internal.Expressions.Visitors;
 
-class GenLambdaExprVisitor : ExpressionVisitor
+sealed class GenLambdaExprVisitor : ExpressionVisitor
 {
 	private readonly Dictionary<object, VarNfo> varMap;
 	private readonly ParameterExpression[] paramExprs;

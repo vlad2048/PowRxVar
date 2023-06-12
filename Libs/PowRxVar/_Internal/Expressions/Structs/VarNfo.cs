@@ -3,7 +3,7 @@ using Expr = System.Linq.Expressions.Expression;
 
 namespace PowRxVar._Internal.Expressions.Structs;
 
-class VarNfo
+sealed class VarNfo
 {
 	private static readonly Type varTypeOpen = typeof(IRoVar<>);
 

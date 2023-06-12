@@ -2,7 +2,7 @@
 
 namespace PowRxVar;
 
-public class SerialDisp<T> : IRwDispBase where T : class, IDisposable
+public sealed class SerialDisp<T> : IRwDispBase where T : class, IDisposable
 {
 	private readonly Disp d = new();
 	private T? value;

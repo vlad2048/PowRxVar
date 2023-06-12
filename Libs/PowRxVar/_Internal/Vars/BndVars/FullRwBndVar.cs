@@ -4,7 +4,7 @@ using PowRxVar._Internal.Vars.Disps;
 
 namespace PowRxVar._Internal.Vars.BndVars;
 
-class FullRwBndVar<T> : RwDispBase, IFullRwBndVar<T>
+sealed class FullRwBndVar<T> : RwDispBase, IFullRwBndVar<T>
 {
 	private readonly ISubject<T> whenInner;
 	private readonly ISubject<T> whenOuter;

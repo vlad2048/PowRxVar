@@ -2,7 +2,7 @@
 
 namespace PowRxVar._Internal.Expressions.Utils;
 
-class MemberNfo
+sealed class MemberNfo
 {
 	private readonly MemberInfo nfo;
 

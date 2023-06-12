@@ -3,7 +3,7 @@ using PowRxVar._Internal.Vars.Disps;
 
 namespace PowRxVar._Internal.Vars.NormalVars;
 
-class RwVar<T> : RwDispBase, IRwVar<T>
+sealed class RwVar<T> : RwDispBase, IRwVar<T>
 {
 	private readonly BehaviorSubject<T> subj;
 

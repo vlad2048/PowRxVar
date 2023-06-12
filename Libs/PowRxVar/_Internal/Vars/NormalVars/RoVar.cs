@@ -3,7 +3,7 @@ using System.Reactive.Disposables;
 
 namespace PowRxVar._Internal.Vars.NormalVars;
 
-class RoVar<T> : IRoVar<T>
+sealed class RoVar<T> : IRoVar<T>
 {
 	private readonly IRwVar<T> rwVar;
 
@@ -24,7 +24,7 @@ class RoVar<T> : IRoVar<T>
 }
 
 
-class RoVarConst<T> : IRoVar<T>
+sealed class RoVarConst<T> : IRoVar<T>
 {
 	// IRoDispBase
 	public IObservable<Unit> WhenDisposed => Obs.Never<Unit>();

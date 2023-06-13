@@ -4,7 +4,7 @@ using PowRxVar._Internal.Vars.Disps;
 
 namespace PowRxVar._Internal.Vars.BndVars;
 
-sealed class FullRwBndVar<T> : RwDispBase, IFullRwBndVar<T>
+class FullRwBndVar<T> : RwDispBase, IFullRwBndVar<T>
 {
 	private readonly ISubject<T> whenInner;
 	private readonly ISubject<T> whenOuter;
@@ -44,7 +44,7 @@ sealed class FullRwBndVar<T> : RwDispBase, IFullRwBndVar<T>
 					WhenInner.Merge(WhenOuter)
 				).D(this),
 			true =>
-				Var.MakeNoCheck(
+				VarNoCheck.Make(
 					initVal,
 					WhenInner.Merge(WhenOuter)
 				).D(this),

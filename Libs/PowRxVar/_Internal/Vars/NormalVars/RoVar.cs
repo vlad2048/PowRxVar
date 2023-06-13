@@ -3,7 +3,7 @@ using System.Reactive.Disposables;
 
 namespace PowRxVar._Internal.Vars.NormalVars;
 
-sealed class RoVar<T> : IRoVar<T>
+class RoVar<T> : IRoVar<T>
 {
 	private readonly IRwVar<T> rwVar;
 

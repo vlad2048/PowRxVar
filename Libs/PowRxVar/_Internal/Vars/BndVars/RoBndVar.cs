@@ -2,7 +2,7 @@
 
 namespace PowRxVar._Internal.Vars.BndVars;
 
-sealed class RoBndVar<T> : IRoBndVar<T>
+class RoBndVar<T> : IRoBndVar<T>
 {
 	private readonly IFullRwBndVar<T> fullRwBndVar;
 

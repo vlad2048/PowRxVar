@@ -1,4 +1,5 @@
-﻿using PowMaybe;
+﻿using System.Reactive.Linq;
+using PowMaybe;
 using PowRxVar.Maybe._Internals;
 using System.Runtime.CompilerServices;
 
@@ -9,6 +10,12 @@ public static class VarMay
 {
 	public static IRwMayVar<T> Make<T>() => new RwMayVar<T>(May.None<T>(), false, "VarMay.Make()");
 	public static IFullRwMayBndVar<T> MakeBnd<T>() => new FullRwMayBndVar<T>(May.None<T>(), false, "VarMay.MakeBnd()");
+	public static (IRoMayVar<T>, IDisposable) Make<T>(IObservable<T> obs)
+	{
+		var v = Make<T>();
+		obs.Select(May.Some).Subscribe(v).D(v);
+		return (v.ToReadOnlyMay(), v);
+	}
 
 	public static IRoMayVar<T> ToReadOnlyMay<T>(this IRwMayVar<T> v) => new RoMayVar<T>(v);
 	public static IRoMayBndVar<T> ToReadOnlyMay<T>(this IFullRwMayBndVar<T> v) => new RoMayBndVar<T>(v);

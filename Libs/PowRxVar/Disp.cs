@@ -4,6 +4,7 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Runtime.CompilerServices;
 
 namespace PowRxVar;
 
@@ -37,9 +38,9 @@ public sealed class Disp : ICollection<IDisposable>, ICancelable, IRwDispBase
 	private void InitStats(string? dbgExpr = null) => DispStats.DispCreated(statsId, dbgExpr);
 	private void DoneStats() => DispStats.DispDisposed(statsId);
 
-	public Disp(string? dbgExpr)
+	public Disp(string? dbgExpr = null, [CallerFilePath] string srcFile = "", [CallerLineNumber] int srcLine = 0)
 	{
-		InitStats(dbgExpr);
+		InitStats(dbgExpr ?? $"{srcFile}:{srcLine}");
 		_disposables = new List<IDisposable?>();
 	}
 

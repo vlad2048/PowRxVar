@@ -25,13 +25,13 @@ public static class Var
 		T initVal,
 		[CallerFilePath] string srcFile = "", [CallerLineNumber] int srcLine = 0
 	)
-		=> new RwVar<T>(initVal, false, (srcFile, srcLine).Fmt());
+		=> new RwVar<T>(initVal, false, (srcFile, srcLine).Fmt("Var"));
 
 	public static IFullRwBndVar<T> MakeBnd<T>(
 		T initVal,
 		[CallerFilePath] string srcFile = "", [CallerLineNumber] int srcLine = 0
 	)
-		=> new FullRwBndVar<T>(initVal, false, (srcFile, srcLine).Fmt());
+		=> new FullRwBndVar<T>(initVal, false, (srcFile, srcLine).Fmt("Var"));
 
 
 	/// <summary>
@@ -48,7 +48,9 @@ public static class Var
 		[CallerFilePath] string srcFile = "", [CallerLineNumber] int srcLine = 0
 	)
 	{
+		// ReSharper disable ExplicitCallerInfoArgument
 		var v = Make(initVal, srcFile, srcLine);
+		// ReSharper restore ExplicitCallerInfoArgument
 		obs.Subscribe(v).D(v);
 		return (v.ToReadOnly(), v);
 	}
@@ -66,7 +68,9 @@ public static class Var
 		[CallerFilePath] string srcFile = "", [CallerLineNumber] int srcLine = 0
 	)
 	{
+		// ReSharper disable ExplicitCallerInfoArgument
 		var v = Make(initVal, srcFile, srcLine);
+		// ReSharper restore ExplicitCallerInfoArgument
 		obsFun(v).Subscribe(v).D(v);
 		return (v.ToReadOnly(), v);
 	}
@@ -101,15 +105,12 @@ public static class Var
 	/// <br/>
 	/// Note: IFullRwBndVar inherits from IRwBndVar so you don't technically need to call this function. However calling it will prevent the user code from casting it back to an IFullRwBndVar. Similar to Observable.AsObservable() extension method
 	/// </summary>
-	/// <typeparam name="T">Variable type</typeparam>
-	/// <param name="v">Fully writable bound variable</param>
-	/// <param name="vExpr">dbg</param>
 	/// <returns>(outer only) writable bound variable</returns>
 	public static IRwBndVar<T> ToRwBndVar<T>(
 		this IFullRwBndVar<T> v,
 		[CallerFilePath] string srcFile = "", [CallerLineNumber] int srcLine = 0
 	)
-		=> new RwBndVar<T>(v, (srcFile, srcLine).Fmt());
+		=> new RwBndVar<T>(v, (srcFile, srcLine).Fmt("Var"));
 
 
 	/// <summary>

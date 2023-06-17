@@ -20,8 +20,8 @@ static class DispStats
 		};
 		L(title);
 		L(new string('=', title.Length));
-		if (arr.Length > 0)
-			L(string.Join(", ", arr.Select(e => $"{e}")));
+		foreach (var item in arr)
+			L($"{item}");
 		L("");
 		return arr.Length == 0;
 	}
@@ -29,14 +29,10 @@ static class DispStats
 
 
 
-	private record VarNfo(int Id, string? Expr)
+	private sealed record VarNfo(int Id, string? Expr)
 	{
 		public override string ToString() => $"[{Id}, {ExprStr}]";
-		private string ExprStr => Expr switch
-		{
-			null => "_",
-			not null => $"'{Expr}'"
-		};
+		private string ExprStr => Expr ?? "_";
 	}
 
 	private static readonly ConcurrentDictionary<int, VarNfo> map = new();

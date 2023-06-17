@@ -16,10 +16,10 @@ public static class RxVarMaybeExt
 	public static IObservable<Unit> WhenNone<T>(this IObservable<Maybe<T>> mayVar) =>
 		mayVar.Where(e => e.IsNone()).ToUnit();
 
-	public static IRoVar<bool> WhenVarSome<T>(this IRoVar<Maybe<T>> v) =>
+	public static IRoVar<bool> WhenVarSome<T>(this IRoMayVar<T> v) =>
 		v.SelectVar(e => e.IsSome());
 
-	public static IRoVar<bool> WhenVarNone<T>(this IRoVar<Maybe<T>> v) =>
+	public static IRoVar<bool> WhenVarNone<T>(this IRoMayVar<T> v) =>
 		v.SelectVar(e => e.IsNone());
 
 
@@ -36,13 +36,15 @@ public static class RxVarMaybeExt
 	public static IObservable<Maybe<U>> SelectMay<T, U>(this IObservable<Maybe<T>> obs, Func<T, U> fun) =>
 		obs.Select(e => e.Select(fun));
 
-	public static IRoVar<Maybe<U>> SelectVarMay<T, U>(this IRoVar<Maybe<T>> v, Func<T, U> fun) =>
-		v.SelectVar(e => e.Select(fun));
+	public static IRoMayVar<U> SelectVarMay<T, U>(this IRoMayVar<T> v, Func<T, U> fun) =>
+		VarMay.Make(
+			v.Select(e => e.Select(fun))
+		).D(v);
 
-	public static IRoVar<Maybe<U>> SelectVarMayWithRefresh<T, U>(this IRoVar<Maybe<T>> v, Func<T, U> fun, IObservable<Unit> whenRefresh) =>
-		Var.Make(
-			May.None<U>(),
-			Observable.Merge(
+	// Do we really need that ?
+	public static IRoMayVar<U> SelectVarMayWithRefresh<T, U>(this IRoMayVar<T> v, Func<T, U> fun, IObservable<Unit> whenRefresh) =>
+		VarMay.Make(
+			Obs.Merge(
 					v.WhenNone()
 						.Select(_ => May.None<T>()),
 					v.WhenSome()
@@ -57,7 +59,7 @@ public static class RxVarMaybeExt
 				.SelectMay(fun)
 		).D(v);
 
-	public static IRoVar<T> FailWith<T>(this IRoVar<Maybe<T>> v, T def) =>
+	public static IRoVar<T> FailWith<T>(this IRoMayVar<T> v, T def) =>
 		v.SelectVar(e => e.FailWith(def));
 
 	/// <summary>

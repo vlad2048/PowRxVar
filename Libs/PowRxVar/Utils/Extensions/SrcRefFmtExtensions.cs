@@ -6,7 +6,8 @@ static class SrcRefFmtExtensions
 {
 	public static string Fmt(
 		this (string, int) t,
+		string className,
 		[CallerMemberName] string? memberName = null
 	) =>
-		$"'{memberName}' @ {t.Item1}:{t.Item2}";
+		$@"""{className}.{memberName}"" @ {t.Item1}:{t.Item2}";
 }

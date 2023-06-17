@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using PowRxVar._Internal.Vars.BndVars;
 using PowRxVar._Internal.Vars.NormalVars;
+using PowRxVar.Utils.Extensions;
 
 namespace PowRxVar;
 
@@ -8,32 +9,27 @@ public static class VarNoCheck
 {
 	public static IRwVar<T> Make<T>(
 		T initVal,
-		[CallerArgumentExpression(nameof(initVal))] string? initValExpr = null
+		[CallerFilePath] string srcFile = "", [CallerLineNumber] int srcLine = 0
 	)
-		=> new RwVar<T>(initVal, true, $"Var.Make({initValExpr})");
+		=> new RwVar<T>(initVal, true, (srcFile, srcLine).Fmt("VarNoCheck"));
 
 
 	public static IFullRwBndVar<T> MakeBnd<T>(
 		T initVal,
-		[CallerArgumentExpression(nameof(initVal))] string? initValExpr = null
+		[CallerFilePath] string srcFile = "", [CallerLineNumber] int srcLine = 0
 	)
-		=> new FullRwBndVar<T>(initVal, true, $"Var.MakeBnd({initValExpr})");
+		=> new FullRwBndVar<T>(initVal, true, (srcFile, srcLine).Fmt("VarNoCheck"));
 
 
 	internal static (IRoVar<T>, IDisposable) Make<T>(
 		T initVal,
 		IObservable<T> obs,
-		[CallerArgumentExpression(nameof(initVal))] string? initValExpr = null,
-		[CallerArgumentExpression(nameof(obs))] string? obsExpr = null
+		[CallerFilePath] string srcFile = "", [CallerLineNumber] int srcLine = 0
 	)
 	{
-		var dbgStr = $"""
-			Var.Make(
-				{initValExpr},
-				{obsExpr}
-			)
-			""";
-		var v = Make(initVal, dbgStr);
+		// ReSharper disable ExplicitCallerInfoArgument
+		var v = Make(initVal, srcFile, srcLine);
+		// ReSharper restore ExplicitCallerInfoArgument
 		obs.Subscribe(v).D(v);
 		return (v.ToReadOnly(), v);
 	}

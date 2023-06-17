@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using PowRxVar._Internal.Expressions;
 using PowRxVar._Internal.Vars.BndVars;
 using PowRxVar._Internal.Vars.NormalVars;
+using PowRxVar.Utils.Extensions;
 
 namespace PowRxVar;
 
@@ -19,21 +20,18 @@ public static class Var
 	/// <br/>
 	/// Note: The calling code is responsible for calling .Dispose() on the created variable
 	/// </summary>
-	/// <typeparam name="T">Variable type</typeparam>
-	/// <param name="initVal">Initial Value</param>
-	/// <param name="initValExpr">dbg</param>
 	/// <returns>Created variable</returns>
 	public static IRwVar<T> Make<T>(
 		T initVal,
-		[CallerArgumentExpression(nameof(initVal))] string? initValExpr = null
+		[CallerFilePath] string srcFile = "", [CallerLineNumber] int srcLine = 0
 	)
-		=> new RwVar<T>(initVal, false, $"Var.Make({initValExpr})");
+		=> new RwVar<T>(initVal, false, (srcFile, srcLine).Fmt());
 
 	public static IFullRwBndVar<T> MakeBnd<T>(
 		T initVal,
-		[CallerArgumentExpression(nameof(initVal))] string? initValExpr = null
+		[CallerFilePath] string srcFile = "", [CallerLineNumber] int srcLine = 0
 	)
-		=> new FullRwBndVar<T>(initVal, false, $"Var.MakeBnd({initValExpr})");
+		=> new FullRwBndVar<T>(initVal, false, (srcFile, srcLine).Fmt());
 
 
 	/// <summary>
@@ -43,25 +41,14 @@ public static class Var
 	/// Note: Use the <see cref="DisposeExtensions.D{T}(T,IRoDispBase[])"/> extension method to tie the returned IDisposable to the lifetime of other variables and return the simple read only variable
 	/// </summary>
 	/// <typeparam name="T">Variable type</typeparam>
-	/// <param name="initVal">Initial Value</param>
-	/// <param name="obs">Observable of updates</param>
-	/// <param name="initValExpr">dbg</param>
-	/// <param name="obsExpr">dbg</param>
 	/// <returns>Tuple containing the created variable and an IDisposable to control the underlying variable lifetime</returns>
 	public static (IRoVar<T>, IDisposable) Make<T>(
 		T initVal,
 		IObservable<T> obs,
-		[CallerArgumentExpression(nameof(initVal))] string? initValExpr = null,
-		[CallerArgumentExpression(nameof(obs))] string? obsExpr = null
+		[CallerFilePath] string srcFile = "", [CallerLineNumber] int srcLine = 0
 	)
 	{
-		var dbgStr = $"""
-			Var.Make(
-				{initValExpr},
-				{obsExpr}
-			)
-			""";
-		var v = Make(initVal, dbgStr);
+		var v = Make(initVal, srcFile, srcLine);
 		obs.Subscribe(v).D(v);
 		return (v.ToReadOnly(), v);
 	}
@@ -72,25 +59,14 @@ public static class Var
 	/// Create a read only variable with an initial value and an observable of updates that can depend on the previous value
 	/// </summary>
 	/// <typeparam name="T">Variable type</typeparam>
-	/// <param name="initVal">Initial Value</param>
-	/// <param name="obsFun">Function that takes a reference to the variable being created (as readonly) and returns the observable of updates</param>
-	/// <param name="initValExpr">dbg</param>
-	/// <param name="obsFunExpr">dbg</param>
 	/// <returns>Tuple containing the created variable and an IDisposable to control the underlying variable lifetime</returns>
 	public static (IRoVar<T>, IDisposable) Make<T>(
 		T initVal,
 		Func<IRoVar<T>, IObservable<T>> obsFun,
-		[CallerArgumentExpression(nameof(initVal))] string? initValExpr = null,
-		[CallerArgumentExpression(nameof(obsFun))] string? obsFunExpr = null
+		[CallerFilePath] string srcFile = "", [CallerLineNumber] int srcLine = 0
 	)
 	{
-		var dbgStr = $"""
-			Var.Make(
-				{initValExpr},
-				{obsFunExpr}
-			)
-			""";
-		var v = Make(initVal, dbgStr);
+		var v = Make(initVal, srcFile, srcLine);
 		obsFun(v).Subscribe(v).D(v);
 		return (v.ToReadOnly(), v);
 	}
@@ -131,9 +107,9 @@ public static class Var
 	/// <returns>(outer only) writable bound variable</returns>
 	public static IRwBndVar<T> ToRwBndVar<T>(
 		this IFullRwBndVar<T> v,
-		[CallerArgumentExpression(nameof(v))] string? vExpr = null
+		[CallerFilePath] string srcFile = "", [CallerLineNumber] int srcLine = 0
 	)
-		=> new RwBndVar<T>(v, $"ToRwBndVar({vExpr})");
+		=> new RwBndVar<T>(v, (srcFile, srcLine).Fmt());
 
 
 	/// <summary>

@@ -40,7 +40,7 @@ public sealed class Disp : ICollection<IDisposable>, ICancelable, IRwDispBase
 
 	public Disp(string? dbgExpr = null, [CallerFilePath] string srcFile = "", [CallerLineNumber] int srcLine = 0)
 	{
-		InitStats(dbgExpr ?? $"{srcFile}:{srcLine}");
+		InitStats(dbgExpr ?? $@"{srcFile}:{srcLine}  @ ""new Disp()""");
 		_disposables = new List<IDisposable?>();
 	}
 

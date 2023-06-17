@@ -9,5 +9,5 @@ static class SrcRefFmtExtensions
 		string className,
 		[CallerMemberName] string? memberName = null
 	) =>
-		$@"""{className}.{memberName}"" @ {t.Item1}:{t.Item2}";
+		$@"{t.Item1}:{t.Item2}  @ ""{className}.{memberName}""";
 }

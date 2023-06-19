@@ -49,31 +49,15 @@ static class DispStats
 
 	internal static void DispCreated(int id, string? dbgExpr)
 	{
-		try
-		{
-			if (bpId == id) OnBPHit?.Invoke();
-			if (map.ContainsKey(id)) throw new ArgumentException("Invalid Disp.id");
-			map[id] = new VarNfo(id, dbgExpr);
-		}
-		catch (Exception)
-		{
-			Debugger.Launch();
-			Debugger.Break();
-		}
+		if (bpId == id) OnBPHit?.Invoke();
+		if (map.ContainsKey(id)) throw new ArgumentException("Invalid Disp.id");
+		map[id] = new VarNfo(id, dbgExpr);
 	}
 
 	internal static void DispDisposed(int id)
 	{
-		try
-		{
-			if (!map.ContainsKey(id)) throw new ArgumentException("Invalid Disp.id");
-			map.TryRemove(id, out _);
-		}
-		catch (Exception)
-		{
-			Debugger.Launch();
-			Debugger.Break();
-		}
+		if (!map.ContainsKey(id)) throw new ArgumentException("Invalid Disp.id");
+		map.TryRemove(id, out _);
 	}
 
 	private static void L(string s) => Console.WriteLine(s);

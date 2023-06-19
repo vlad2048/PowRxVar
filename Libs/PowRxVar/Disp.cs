@@ -85,24 +85,26 @@ public sealed class Disp : ICollection<IDisposable>, ICancelable, IRwDispBase
 
 	public void Dispose()
 	{
-		List<IDisposable?>? currentDisposables = null;
+		lock (_gate)
+		{
+			if (_disposed)
+				return;
+			Volatile.Write(ref _disposed, true);
+		}
+
+		List<IDisposable?>? currentDisposables;
 
 		lock (_gate) {
-			if (!_disposed) {
-				DoneStats();
-				currentDisposables = _disposables;
-				whenDisposed.OnNext(Unit.Default);
-				whenDisposed.OnCompleted();
-				_disposables = null!;
-				Volatile.Write(ref _count, 0);
-				Volatile.Write(ref _disposed, true);
-			}
+			DoneStats();
+			currentDisposables = _disposables;
+			whenDisposed.OnNext(Unit.Default);
+			whenDisposed.OnCompleted();
+			_disposables = null!;
+			Volatile.Write(ref _count, 0);
 		}
 
-		if (currentDisposables != null) {
-			for (var i = currentDisposables.Count - 1; i >= 0; i--)
-				currentDisposables[i]?.Dispose();
-		}
+		for (var i = currentDisposables.Count - 1; i >= 0; i--)
+			currentDisposables[i]?.Dispose();
 	}
 
 

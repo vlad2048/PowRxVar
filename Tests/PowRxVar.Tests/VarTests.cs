@@ -1,6 +1,6 @@
 namespace PowRxVar.Tests;
 
-class VarTests
+class VarTests : RxBaseTest
 {
 	[Test]
 	public void _00_RwVar_Change_and_Dispose()
@@ -110,6 +110,7 @@ class VarTests
 
 		SetU(12);
 		Check(null, 12, null, 5);
+		u.Dispose();
 	}
 
 	[Test]
@@ -142,6 +143,9 @@ class VarTests
 
 		b.Dispose();
 		Check(null, 4);
+
+		a.Dispose();
+		c.Dispose();
 	}
 
 	[Test]
@@ -201,6 +205,7 @@ class VarTests
 
 		vv.Dispose();
 		Check(null, 7);
+		i2.Dispose();
 	}
 
 	[Test]

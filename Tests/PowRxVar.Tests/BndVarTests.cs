@@ -2,10 +2,8 @@
 
 namespace PowRxVar.Tests;
 
-class BndVarTests
+class BndVarTests : RxBaseTest
 {
-	private Disp d = null!;
-
 	[Test]
 	public void _00_DispOrder()
 	{
@@ -20,23 +18,23 @@ class BndVarTests
 
 	[Test]
 	public void _01_Var_Disp() =>
-		Var.Make(123).D(d);
+		Var.Make(123).D(D);
 
 	[Test]
 	public void _02_BndVar_Disp() =>
-		Var.MakeBnd(123).D(d);
+		Var.MakeBnd(123).D(D);
 
 	[Test]
 	public void _03_ToRwBndVar_Disp()
 	{
-		var rxVar = Var.MakeBnd(123).D(d);
+		var rxVar = Var.MakeBnd(123).D(D);
 		var rxBndVar = rxVar.ToRwBndVar();
 	}
 
 	[Test]
 	public void _04_InnerOuter()
 	{
-		var rxVarFull = Var.MakeBnd(3).D(d);
+		var rxVarFull = Var.MakeBnd(3).D(D);
 		var rxVar = rxVarFull.ToRwBndVar();
 
 		var cntFull = 0;
@@ -92,20 +90,5 @@ class BndVarTests
 		rxVar.V = 8;
 		CheckFull(8, 6, 1, 4);
 		CheckSimp(8, 6, 1, 4);
-	}
-
-
-	[SetUp]
-	public void Setup()
-	{
-		DispStats.ClearForTests();
-		d = new Disp();
-	}
-
-	[TearDown]
-	public void Teardown()
-	{
-		d.Dispose();
-		DispStats.Log().ShouldBeTrue();
 	}
 }

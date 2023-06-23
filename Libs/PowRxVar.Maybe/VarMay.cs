@@ -8,6 +8,9 @@ namespace PowRxVar;
 
 public static class VarMay
 {
+	public static IRoMayVar<T> MakeConst<T>() => new RoMayVarConst<T>(May.None<T>());
+	public static IRoMayVar<T> MakeConst<T>(T val) => new RoMayVarConst<T>(May.Some(val));
+
 	public static IRwMayVar<T> Make<T>(
 		[CallerFilePath] string srcFile = "", [CallerLineNumber] int srcLine = 0
 	)

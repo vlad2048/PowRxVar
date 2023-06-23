@@ -24,7 +24,7 @@ class RoVar<T> : IRoVar<T>
 }
 
 
-sealed class RoVarConst<T> : IRoVar<T>
+class RoVarConst<T> : IRoVar<T>
 {
 	// IRoDispBase
 	public IObservable<Unit> WhenDisposed => Obs.Never<Unit>();

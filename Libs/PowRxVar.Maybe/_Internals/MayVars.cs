@@ -15,6 +15,11 @@ sealed class RoMayVar<T> : RoVar<Maybe<T>>, IRoMayVar<T>
 	public RoMayVar(IRwVar<Maybe<T>> rwVar) : base(rwVar) { }
 }
 
+sealed class RoMayVarConst<T> : RoVarConst<Maybe<T>>, IRoMayVar<T>
+{
+	public RoMayVarConst(Maybe<T> v) : base(v) { }
+}
+
 
 sealed class FullRwMayBndVar<T> : FullRwBndVar<Maybe<T>>, IFullRwMayBndVar<T>
 {
@@ -30,3 +35,4 @@ sealed class RoMayBndVar<T> : RoBndVar<Maybe<T>>, IRoMayBndVar<T>
 {
 	public RoMayBndVar(IFullRwBndVar<Maybe<T>> fullRwBndVar) : base(fullRwBndVar) { }
 }
+

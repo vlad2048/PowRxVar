@@ -77,6 +77,8 @@ public static class DisposeExtensions
 	}
 
 
+	public static (T, IDisposable) WithDisp<T>(this T obj) where T : IDisposable => (obj, obj);
+
 
 
 

@@ -72,4 +72,15 @@ public static class VarMay
 			selFun(varT.V).V,
 			varT.Select(selFun).Switch()
 		).D(varT);
+
+
+
+	public static IRoMayVar<U> SwitchMayVar<T, U>(
+		this IRoMayVar<T> varT,
+		Func<T, IRoVar<U>> selFun
+	) =>
+		Make(
+			varT.V.Select(t => selFun(t).V),
+			varT.Select(t => t.Select(u => selFun(u).V))
+		).D(varT);
 }

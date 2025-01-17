@@ -1,12 +1,13 @@
 <Project>
 
 	<PropertyGroup>
+		<TargetFrameworks>net6.0;net9.0</TargetFrameworks>
 		<LangVersion>preview</LangVersion>
 		<EnablePreviewFeatures>True</EnablePreviewFeatures>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<DebugType>embedded</DebugType>
-		<Version>0.0.47</Version>
+		<Version>0.1.0</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Authors>vlad2048</Authors>
 		<Description>Composable reactive variables</Description>
